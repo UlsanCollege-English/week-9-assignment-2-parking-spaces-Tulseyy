@@ -10,13 +10,28 @@ Behavior:
 """
 
 def min_parking_spots(intervals):
-    # TODO Steps:
-    # 1) Understand: we need peak overlap count.
-    # 2) Re-phrase: track earliest end; reuse when end <= start.
-    # 3) Identify: inputs list of pairs; output int; vars heap, rooms.
-    # 4) Break down: sort by start; pop ends <= start; push end; track max size.
-    # 5) Pseudocode above; implement with heapq.
-    # 6) Write code.
-    # 7) Debug with small examples.
-    # 8) Confirm O(n log n).
-    raise NotImplementedError
+    # Handle empty input
+    if not intervals:
+        return 0
+        
+    # Sort intervals by start time for chronological processing
+    intervals.sort(key=lambda x: x[0])
+    
+    # Initialize min heap to track end times
+    import heapq
+    end_times = []
+    max_spots = 0
+    
+    # Process each interval
+    for start, end in intervals:
+        # Remove all spots that can be reused (end time <= current start)
+        while end_times and end_times[0] <= start:
+            heapq.heappop(end_times)
+            
+        # Add current interval's end time
+        heapq.heappush(end_times, end)
+        
+        # Update maximum spots needed (current heap size = spots in use)
+        max_spots = max(max_spots, len(end_times))
+    
+    return max_spots
